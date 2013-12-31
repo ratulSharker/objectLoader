@@ -121,9 +121,25 @@ void drawHeli(){
 
 			glPushMatrix();
 			//glTranslatef(displaceX,displaceY,displaceZ);
+
+			/*
+			 *-XZ axis angle can be provided here
+
 			glRotatef(fan_angle,cos((ThetaX) * 3.1416/180.0) * sin((-ThetaZ) * 3.1416 / 180.0),
 								cos((ThetaX) * 3.1416/180.0) * cos((ThetaZ) * 3.1416/180.0),
 								sin((ThetaX) * 3.1416/180.0));
+			*/
+			glRotatef(10,1,0,0);
+			glRotatef(20,0,1,0);
+			glRotatef(30,0,0,1);
+
+			glRotatef(fan_angle,0,1,0);
+
+			glRotatef(-10,1,0,0);
+			glRotatef(-20,0,1,0);
+			glRotatef(-30,0,0,1);
+
+
 
 
 		}

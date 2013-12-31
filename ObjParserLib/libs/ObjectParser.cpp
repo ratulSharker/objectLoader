@@ -202,10 +202,42 @@ void ObjectParser::DrawGivenSubobject(std::string objName,float displaceX,float 
 /*
  * basically draws object at the center using the up function call
  * then rotate it along the supplied thetas with angularRotation
+ *
  */
 void ObjectParser::DrawGivenSubobjectWithAngle(std::string objName,float displaceX,float displaceY,float displaceZ,
-			float thetaX,float thetaY,float angularRotation,bool keepAtCenter){
+			float thetaX,float thetaY,float thetaZ,float angularRotation,int rotateAbout,bool keepAtCenter){
 
+	glPushMatrix();{
+
+		//translation
+		if(keepAtCenter == false){//when its true the overall drawing will be at the center -- with the angle
+			glTranslatef(displaceX,displaceY,displaceZ);
+		}
+
+		//rotation
+		glRotatef(thetaX,1,0,0);
+		glRotatef(thetaY,0,1,0);
+		glRotatef(thetaZ,0,0,1);
+
+		switch(rotateAbout){
+		case X_AXIS:
+			glRotatef(angularRotation,1,0,0);
+			break;
+		case Y_AXIS:
+			glRotatef(angularRotation,0,1,0);
+			break;
+		case Z_AXIS:
+			glRotatef(angularRotation,0,0,1);
+			break;
+		}
+
+		glRotatef(-thetaX,1,0,0);
+		glRotatef(-thetaY,0,1,0);
+		glRotatef(-thetaZ,0,0,1);
+
+		this->DrawGivenSubobject(objName,displaceX,displaceY,displaceZ);
+
+	}glPopMatrix();
 
 
 }

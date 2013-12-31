@@ -21,9 +21,15 @@ private:
 #define FACE_COORDINATE_THREE 1
 #define FACE_COORDINATE_FOUR 2
 
+
 	std::string fileName;
 
 public:
+
+#define X_AXIS 3
+#define Y_AXIS 4
+#define Z_AXIS 5
+
 	std::vector<Vertice> vertices; //data structure for the vertices
 	std::map<std::string,std::vector<Face> > faces; //data structure for the faces
 
@@ -34,7 +40,7 @@ public:
 	void DrawGivenSubobject(std::string objName,float displaceX,float displaceY,float displaceZ);
 
 	void DrawGivenSubobjectWithAngle(std::string objName,float displaceX,float displaceY,float displaceZ,
-			float thetaX,float thetaY,float angularRotation,bool keepAtCenter);
+			float thetaX,float thetaY,float thetaZ,float angularRotation,int rotateAbout,bool keepAtCenter);
 
 };
 
