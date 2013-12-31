@@ -33,7 +33,7 @@ using namespace std;
 #define HIGHEST_FAN_ROTATION_SPEED 20
 
 
-ObjectParser heli("asset/rotor.obj");
+ObjectParser heli("asset/heli.obj");
 
 
 //fan constant
@@ -139,9 +139,6 @@ void drawHeli(){
 			glRotatef(-20,0,1,0);
 			glRotatef(-30,0,0,1);
 
-
-
-
 		}
 		else{
 			displaceX = 0; //main_rotor transformation values
@@ -201,9 +198,26 @@ void drawing() {
 	//drawing code should be here
 	drawGrid(10,200,5);
 
-	drawHeli();
+	//heli.DrawGivenSubobjectWithAngle("rear_rotor",6.3022,-1.04241,4.75804,10,20,30,fan_angle,ObjectParser::Y_AXIS,true);
 	//heli.DrawGivenSubobject("rear_rotor",0,0,0);
+	//heli.DrawWholeObjectWithNoTransformation();
+	heli.DrawGivenSubobject("fuselage",0,0,0);
+	//heli.DrawGivenSubobject("cabinDoor13",0,0,0);
+	heli.DrawGivenSubobject("cabinDoor_",0,0,0);
+	heli.DrawGivenSubobject("Door_R",0,0,0);
+	heli.DrawGivenSubobject("Door_L",0,0,0);
+	heli.DrawGivenSubobject("elevator",0,0,0);
+	heli.DrawGivenSubobject("tyre_R",0,0,0);
+	heli.DrawGivenSubobject("rear_Tyre",0,0,0);
+	heli.DrawGivenSubobject("Tyre_L",0,0,0);
+	heli.DrawGivenSubobject("Window_L2",0,0,0);
+	heli.DrawGivenSubobject("Window_L1",0,0,0);
+	heli.DrawGivenSubobject("Window_R2",0,0,0);
+	heli.DrawGivenSubobject("window_R1",0,0,0);
 
+	//drawing main rotor
+	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
+	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
 
 	//necessary to ensure that it draws
 	glutSwapBuffers();

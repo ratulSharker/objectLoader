@@ -215,8 +215,11 @@ void ObjectParser::DrawGivenSubobjectWithAngle(std::string objName,float displac
 		}
 
 		//rotation
+		if(thetaX != 0.0)
 		glRotatef(thetaX,1,0,0);
+		if(thetaY != 0.0)
 		glRotatef(thetaY,0,1,0);
+		if(thetaZ != 0.0)
 		glRotatef(thetaZ,0,0,1);
 
 		switch(rotateAbout){
@@ -231,13 +234,52 @@ void ObjectParser::DrawGivenSubobjectWithAngle(std::string objName,float displac
 			break;
 		}
 
+		if(thetaX != 0.0)
 		glRotatef(-thetaX,1,0,0);
+		if(thetaY != 0.0)
 		glRotatef(-thetaY,0,1,0);
+		if(thetaZ != 0.0)
 		glRotatef(-thetaZ,0,0,1);
-
 		this->DrawGivenSubobject(objName,displaceX,displaceY,displaceZ);
 
 	}glPopMatrix();
 
 
+}
+
+/*
+ * Draws whole object without any transformation applied
+ * (in background it simply draws all the faces)
+ */
+void ObjectParser::DrawWholeObjectWithNoTransformation(){
+
+	for(std::map<std::string,std::vector<Face> >::iterator it = this->faces.begin(); it != this->faces.end() ; it++){
+
+		//here we get a object
+		for(unsigned int i=0;i<it->second.size();i++){
+			//here we get a single face
+				if(it->second[i].isFour){
+					glBegin(GL_QUADS);
+				}
+				else{
+					glBegin(GL_TRIANGLES);
+				}
+
+
+				Vertice *v1 = &this->vertices[it->second[i].A - 1];
+				Vertice *v2 = &this->vertices[it->second[i].B - 1];
+				Vertice *v3 = &this->vertices[it->second[i].C - 1];
+
+
+				glVertex3f(v1->X,v1->Y,v1->Z);
+				glVertex3f(v2->X,v2->Y,v2->Z);
+				glVertex3f(v3->X,v3->Y,v3->Z);
+
+				if(it->second[i].isFour){
+					Vertice *v4 = &this->vertices[it->second[i].D - 1];
+					glVertex3f(v4->X,v4->Y,v4->Z);
+				}
+				glEnd();
+			}
+		}
 }
