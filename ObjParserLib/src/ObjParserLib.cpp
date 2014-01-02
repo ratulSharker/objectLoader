@@ -208,6 +208,8 @@ void drawing() {
 	//drawing code should be here
 	drawGrid(10,200,5);
 
+	/*
+
 	//heli.DrawGivenSubobjectWithAngle("rear_rotor",6.3022,-1.04241,4.75804,10,20,30,fan_angle,ObjectParser::Y_AXIS,true);
 	//heli.DrawGivenSubobject("rear_rotor",0,0,0);
 	//heli.DrawWholeObjectWithNoTransformation();
@@ -239,11 +241,11 @@ void drawing() {
 	//drawing main rotor
 	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
 	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
-
+	*/
 
 
 	//porsche911.DrawWholeObjectWithNoTransformation();
-	//aventador.DrawWholeObjectWithNoTransformation();
+	aventador.DrawWholeObjectWithNoTransformation();
 	//lady.DrawWholeObjectWithNoTransformation();
 
 
@@ -734,9 +736,9 @@ void passiveMotionListener(int x,int y){
 int main(int argc, char **argv) {
 
 	//preloading
-	heli.loadGivenFile();
+	//heli.loadGivenFile();
 	//heli.showVerticesAndFaces();
-	//aventador.loadGivenFile();
+	aventador.loadGivenFile();
 	//porsche911.loadGivenFile();
 	//lady.loadGivenFile();
 	std::cout<<"load complete"<<endl;
