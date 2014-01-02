@@ -27,7 +27,9 @@ using namespace std;
 
 
 ObjectParser heli("asset/heli.obj");
-
+ObjectParser porsche911("asset/porsche.obj");
+ObjectParser aventador("asset/aventador.obj");
+ObjectParser lady("asset/lady.obj");
 
 //fan constant
 #define FAN_ACCERALATING 1
@@ -211,7 +213,6 @@ void drawing() {
 	//heli.DrawWholeObjectWithNoTransformation();
 	glColor3f(1,1,1);
 	heli.DrawGivenSubobject("fuselage",0,0,0);
-	//heli.DrawGivenSubobject("cabinDoor13",0,0,0);
 	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("cabinDoor_",0,0,0);
 	//glColor3f(1,1,1);
@@ -238,6 +239,12 @@ void drawing() {
 	//drawing main rotor
 	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
 	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
+
+
+
+	//porsche911.DrawWholeObjectWithNoTransformation();
+	//aventador.DrawWholeObjectWithNoTransformation();
+	//lady.DrawWholeObjectWithNoTransformation();
 
 
 	//necessary to ensure that it draws
@@ -729,6 +736,10 @@ int main(int argc, char **argv) {
 	//preloading
 	heli.loadGivenFile();
 	//heli.showVerticesAndFaces();
+	//aventador.loadGivenFile();
+	//porsche911.loadGivenFile();
+	//lady.loadGivenFile();
+	std::cout<<"load complete"<<endl;
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

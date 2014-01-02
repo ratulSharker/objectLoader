@@ -105,11 +105,17 @@ void ObjectParser::loadGivenFile(){
 					sscanf(buf,"f %u//%u %u//%u %u//%u",&a,&id,&b,&id,&c,&id);
 
 					this->faces[lastSeenObject].push_back(Face(a,b,c,0,id,false));
+
+					//if any object's consist of equal number of vertices -- comment the following line
+					faceStat = FACE_COORDINATE_UNKNOWN;//allowing each object different number of faces
 				}
 				else if(faceStat == FACE_COORDINATE_FOUR){
 					sscanf(buf,"f %u//%u %u//%u %u//%u %u//%u",&a,&id,&b,&id,&c,&id,&d,&id);
 
 					this->faces[lastSeenObject].push_back(Face(a,b,c,d,id,true));
+
+					//if any object's consist of equal number of vertices -- comment the following line
+					faceStat = FACE_COORDINATE_UNKNOWN;//allowing each object different number of faces
 				}
 
 			}
