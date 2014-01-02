@@ -61,7 +61,7 @@ void ObjectParser::loadGivenFile(){
 			else if(buf[0] == 'v' && buf[1] == ' '){
 				//its a vertice for the last seen object
 				//1. scan the X,Y,Z
-				//2. push_back a entry to the maps->lastseenobject->vector
+				//2. push_back a entry to the vector
 
 				//scanning
 				float tmpX,tmpY,tmpZ;
@@ -69,6 +69,16 @@ void ObjectParser::loadGivenFile(){
 
 				//pushing
 				this->vertices.push_back(Vertice(tmpX,tmpY,tmpZ));
+			}
+			else if(buf[0] == 'v' && buf[1] == 'n'){
+				//its a normal of vertice for the last seen object
+				//1. scan the X,Y,Z
+				//2. push_back a entry to the maps->lastseenobject->normal-vector
+				float tmpX,tmpY,tmpZ;
+				sscanf(buf,"vn %f %f %f",&tmpX,&tmpY,&tmpZ);
+
+				//pushing the normal vectors
+				this->normals.push_back(Vertice(tmpX,tmpY,tmpZ));
 			}
 			else if(buf[0] == 'f' && buf[1] == ' '){
 				//its a face for the last seen object
@@ -89,18 +99,17 @@ void ObjectParser::loadGivenFile(){
 						faceStat = FACE_COORDINATE_FOUR;
 					}
 				}
-
 				//extracting the value & pushing
-				unsigned int a,b,c,d = 0;
+				unsigned int a,b,c,d,id = 0;
 				if(faceStat == FACE_COORDINATE_THREE){
-					sscanf(buf,"f %u %u %u",&a,&b,&c);
+					sscanf(buf,"f %u//%u %u//%u %u//%u",&a,&id,&b,&id,&c,&id);
 
-					this->faces[lastSeenObject].push_back(Face(a,b,c,0,false));
+					this->faces[lastSeenObject].push_back(Face(a,b,c,0,id,false));
 				}
 				else if(faceStat == FACE_COORDINATE_FOUR){
-					sscanf(buf,"f %u %u %u %u",&a,&b,&c,&d);
+					sscanf(buf,"f %u//%u %u//%u %u//%u %u//%u",&a,&id,&b,&id,&c,&id,&d,&id);
 
-					this->faces[lastSeenObject].push_back(Face(a,b,c,d,true));
+					this->faces[lastSeenObject].push_back(Face(a,b,c,d,id,true));
 				}
 
 			}
@@ -173,11 +182,12 @@ void ObjectParser::DrawGivenSubobject(std::string objName,float displaceX,float 
 					glBegin(GL_TRIANGLES);
 				}
 
-
+				Vertice *v0 = &this->normals[it->second[i].faceId - 1]; //vertice for the normal
 				Vertice *v1 = &this->vertices[it->second[i].A - 1];
 				Vertice *v2 = &this->vertices[it->second[i].B - 1];
 				Vertice *v3 = &this->vertices[it->second[i].C - 1];
 
+				glNormal3f(v0->X,v0->Y,v0->Z);//specifying the normal
 
 				glVertex3f(v1->X-displaceX,v1->Y-displaceY,v1->Z-displaceZ);
 				glVertex3f(v2->X-displaceX,v2->Y-displaceY,v2->Z-displaceZ);
@@ -266,10 +276,13 @@ void ObjectParser::DrawWholeObjectWithNoTransformation(){
 				}
 
 
+				Vertice *v0 = &this->normals[it->second[i].faceId - 1]; //vertice for the normal
 				Vertice *v1 = &this->vertices[it->second[i].A - 1];
 				Vertice *v2 = &this->vertices[it->second[i].B - 1];
 				Vertice *v3 = &this->vertices[it->second[i].C - 1];
 
+
+				glNormal3f(v0->X,v0->Y,v0->Z);//specifying the normal
 
 				glVertex3f(v1->X,v1->Y,v1->Z);
 				glVertex3f(v2->X,v2->Y,v2->Z);

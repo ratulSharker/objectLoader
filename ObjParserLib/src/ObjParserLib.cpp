@@ -1,16 +1,9 @@
 //============================================================================
 // Name        : ObjParserLib.cpp
 // Author      : ratul
-// Version     :
-// Copyright   : Your copyright notice
+// Version     : 1.0
+// Copyright   : It is under Apache Licence agreement
 // Description : ObjectParser in C++, Ansi-style
-//============================================================================
-//============================================================================
-// Name        : OpenGlCube.cpp
-// Author      : ratul
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 
@@ -94,6 +87,14 @@ void init() {
 	//enabling the depth test
 	glEnable(GL_DEPTH_TEST);
 
+
+	//enable lighting things
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	float color[] = {1.0,1.0,1.0,1.0};
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
+
+
 	//calculate the initial looking + camera looking at the first quadtrant
 	currentCameraX = -200 * 1.3 * 0.75; //width of the room
 	currentCameraY = 150 * 1.3 / 2;
@@ -107,6 +108,7 @@ void init() {
 
 }
 
+/*
 void drawHeli(){
 	float displaceX = 0,displaceY = 0,displaceZ = 0;
 	for(std::map<std::string,std::vector<Face> >::iterator it = heli.faces.begin(); it != heli.faces.end() ; it++){
@@ -117,18 +119,18 @@ void drawHeli(){
 			displaceY = -1.04241;
 			displaceZ = 4.75804;
 
-			double ThetaX = 20.0,ThetaY = 25.0, ThetaZ = -30.0;
+			//double ThetaX = 20.0,ThetaY = 25.0, ThetaZ = -30.0;
 
 			glPushMatrix();
 			//glTranslatef(displaceX,displaceY,displaceZ);
 
-			/*
-			 *-XZ axis angle can be provided here
+
+			//XZ axis angle can be provided here
 
 			glRotatef(fan_angle,cos((ThetaX) * 3.1416/180.0) * sin((-ThetaZ) * 3.1416 / 180.0),
 								cos((ThetaX) * 3.1416/180.0) * cos((ThetaZ) * 3.1416/180.0),
 								sin((ThetaX) * 3.1416/180.0));
-			*/
+
 			glRotatef(10,1,0,0);
 			glRotatef(20,0,1,0);
 			glRotatef(30,0,0,1);
@@ -180,6 +182,7 @@ void drawHeli(){
 
 		}
 }
+*/
 
 void drawing() {
 
@@ -187,13 +190,18 @@ void drawing() {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
 	//matrix operations
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
+	//lighting codes
+	float position[] = {0,0,40,1};
+	glLightfv(GL_LIGHT0,GL_POSITION,position);
+
 	//camera settings
 	gluLookAt(currentCameraX, currentCameraY, currentCameraZ, currentLookingAtX,currentLookingAtY, currentLookingAtZ, 0, 0, 1);
-
 
 	//drawing code should be here
 	drawGrid(10,200,5);
@@ -201,23 +209,36 @@ void drawing() {
 	//heli.DrawGivenSubobjectWithAngle("rear_rotor",6.3022,-1.04241,4.75804,10,20,30,fan_angle,ObjectParser::Y_AXIS,true);
 	//heli.DrawGivenSubobject("rear_rotor",0,0,0);
 	//heli.DrawWholeObjectWithNoTransformation();
+	glColor3f(1,1,1);
 	heli.DrawGivenSubobject("fuselage",0,0,0);
 	//heli.DrawGivenSubobject("cabinDoor13",0,0,0);
+	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("cabinDoor_",0,0,0);
+	//glColor3f(1,1,1);
 	heli.DrawGivenSubobject("Door_R",0,0,0);
+	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("Door_L",0,0,0);
+	//glColor3f(1,1,1);
 	heli.DrawGivenSubobject("elevator",0,0,0);
+	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("tyre_R",0,0,0);
+	//glColor3f(1,1,1);
 	heli.DrawGivenSubobject("rear_Tyre",0,0,0);
+	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("Tyre_L",0,0,0);
+	//glColor3f(1,1,1);
 	heli.DrawGivenSubobject("Window_L2",0,0,0);
+	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("Window_L1",0,0,0);
+	//glColor3f(1,1,1);
 	heli.DrawGivenSubobject("Window_R2",0,0,0);
+	//glColor3f(0.9,0.9,0.9);
 	heli.DrawGivenSubobject("window_R1",0,0,0);
 
 	//drawing main rotor
 	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
 	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
+
 
 	//necessary to ensure that it draws
 	glutSwapBuffers();

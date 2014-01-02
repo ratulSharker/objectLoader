@@ -10,13 +10,15 @@
 
 class Face{
 public:
+	unsigned long int faceId;
 	unsigned int A,B,C,D;
 	bool isFour;
-	Face(unsigned int a,unsigned int b,unsigned int c,unsigned int d = 0,bool isFou = false){
+	Face(unsigned int a,unsigned int b,unsigned int c,unsigned int d,unsigned long int fid,bool isFou){
 		this->A = a;
 		this->B = b;
 		this->C = c;
 		this->D = d;
+		this->faceId = fid;
 		this->isFour = isFou;
 	}
 	void show(int tag){
