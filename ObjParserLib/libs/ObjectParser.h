@@ -37,7 +37,7 @@ const static int Z_AXIS  = 5;
 	void loadGivenFile();
 	void showVerticesAndFaces();
 	std::vector<std::string> getSubObjectList();
-	void DrawGivenSubobject(std::string objName,float displaceX,float displaceY,float displaceZ);
+	void DrawGivenSubobject(std::string objName);
 	void DrawWholeObjectWithNoTransformation();
 
 	/*too much memory & CPU consuming code*/

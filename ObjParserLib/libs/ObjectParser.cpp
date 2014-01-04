@@ -98,6 +98,14 @@ void ObjectParser::loadGivenFile(){
 					else if(count == 4){//four vertices in each face
 						faceStat = FACE_COORDINATE_FOUR;
 					}
+					else{//too many faces for a single face
+						//no space to allocate this much vertices
+						//exit
+						std::cout<<"ERROR:: TOO MANY VERTICES FOR A SINGLE FACE."<<std::endl;
+						std::cout<<"object filename :: " << this->fileName<<std::endl;
+						std::cout<<"subobject name :: "<<lastSeenObject<<std::endl;
+						return ;
+					}
 				}
 				//extracting the value & pushing
 				unsigned int a,b,c,d,id = 0;
@@ -173,7 +181,7 @@ std::vector<std::string> ObjectParser::getSubObjectList(){
  * last three variable readen from our modeling software
  *
  */
-void ObjectParser::DrawGivenSubobject(std::string objName,float displaceX,float displaceY,float displaceZ){
+void ObjectParser::DrawGivenSubobject(std::string objName){
 
 	std::map<std::string,std::vector<Face> >::iterator it = this->faces.find(objName.c_str());
 
@@ -195,13 +203,13 @@ void ObjectParser::DrawGivenSubobject(std::string objName,float displaceX,float 
 
 				glNormal3f(v0->X,v0->Y,v0->Z);//specifying the normal
 
-				glVertex3f(v1->X-displaceX,v1->Y-displaceY,v1->Z-displaceZ);
-				glVertex3f(v2->X-displaceX,v2->Y-displaceY,v2->Z-displaceZ);
-				glVertex3f(v3->X-displaceX,v3->Y-displaceY,v3->Z-displaceZ);
+				glVertex3f(v1->X,v1->Y,v1->Z);
+				glVertex3f(v2->X,v2->Y,v2->Z);
+				glVertex3f(v3->X,v3->Y,v3->Z);
 
 				if(it->second[i].isFour){
 					Vertice *v4 = &this->vertices[it->second[i].D - 1];
-					glVertex3f(v4->X-displaceX,v4->Y-displaceY,v4->Z-displaceZ);
+					glVertex3f(v4->X,v4->Y,v4->Z);
 				}
 
 				glEnd();
@@ -256,7 +264,9 @@ void ObjectParser::DrawGivenSubobjectWithAngle(std::string objName,float displac
 		glRotatef(-thetaY,0,1,0);
 		if(thetaZ != 0.0)
 		glRotatef(-thetaZ,0,0,1);
-		this->DrawGivenSubobject(objName,displaceX,displaceY,displaceZ);
+
+		glTranslatef(-displaceX,-displaceY,-displaceZ);
+		this->DrawGivenSubobject(objName);
 
 	}glPopMatrix();
 

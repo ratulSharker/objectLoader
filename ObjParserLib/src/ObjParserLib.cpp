@@ -30,6 +30,8 @@ ObjectParser heli("asset/heli.obj");
 ObjectParser porsche911("asset/porsche.obj");
 ObjectParser aventador("asset/aventador.obj");
 ObjectParser lady("asset/lady.obj");
+ObjectParser sr71("asset/sr71.obj");
+
 
 //fan constant
 #define FAN_ACCERALATING 1
@@ -94,7 +96,7 @@ void init() {
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	float color[] = {1.0,1.0,1.0,1.0};
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,color);
+	glLightfv(GL_LIGHT0,GL_AMBIENT_AND_DIFFUSE,color);
 
 
 	//calculate the initial looking + camera looking at the first quadtrant
@@ -208,45 +210,35 @@ void drawing() {
 	//drawing code should be here
 	drawGrid(10,200,5);
 
-	/*
 
 	//heli.DrawGivenSubobjectWithAngle("rear_rotor",6.3022,-1.04241,4.75804,10,20,30,fan_angle,ObjectParser::Y_AXIS,true);
 	//heli.DrawGivenSubobject("rear_rotor",0,0,0);
 	//heli.DrawWholeObjectWithNoTransformation();
 	glColor3f(1,1,1);
-	heli.DrawGivenSubobject("fuselage",0,0,0);
-	//glColor3f(0.9,0.9,0.9);
-	heli.DrawGivenSubobject("cabinDoor_",0,0,0);
-	//glColor3f(1,1,1);
-	heli.DrawGivenSubobject("Door_R",0,0,0);
-	//glColor3f(0.9,0.9,0.9);
-	heli.DrawGivenSubobject("Door_L",0,0,0);
-	//glColor3f(1,1,1);
-	heli.DrawGivenSubobject("elevator",0,0,0);
-	//glColor3f(0.9,0.9,0.9);
-	heli.DrawGivenSubobject("tyre_R",0,0,0);
-	//glColor3f(1,1,1);
-	heli.DrawGivenSubobject("rear_Tyre",0,0,0);
-	//glColor3f(0.9,0.9,0.9);
-	heli.DrawGivenSubobject("Tyre_L",0,0,0);
-	//glColor3f(1,1,1);
-	heli.DrawGivenSubobject("Window_L2",0,0,0);
-	//glColor3f(0.9,0.9,0.9);
-	heli.DrawGivenSubobject("Window_L1",0,0,0);
-	//glColor3f(1,1,1);
-	heli.DrawGivenSubobject("Window_R2",0,0,0);
-	//glColor3f(0.9,0.9,0.9);
-	heli.DrawGivenSubobject("window_R1",0,0,0);
+	heli.DrawGivenSubobject("fuselage");
+	heli.DrawGivenSubobject("cabinDoor_");
+	heli.DrawGivenSubobject("Door_R");
+	heli.DrawGivenSubobject("Door_L");
+	heli.DrawGivenSubobject("elevator");
+	heli.DrawGivenSubobject("tyre_R");
+	heli.DrawGivenSubobject("rear_Tyre");
+	heli.DrawGivenSubobject("Tyre_L");
+	heli.DrawGivenSubobject("Window_L2");
+	heli.DrawGivenSubobject("Window_L1");
+	heli.DrawGivenSubobject("Window_R2");
+	heli.DrawGivenSubobject("window_R1");
+	heli.DrawGivenSubobject("cabinDoo13");
 
 	//drawing main rotor
 	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
 	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
-	*/
+
 
 
 	//porsche911.DrawWholeObjectWithNoTransformation();
-	aventador.DrawWholeObjectWithNoTransformation();
+	//aventador.DrawWholeObjectWithNoTransformation();
 	//lady.DrawWholeObjectWithNoTransformation();
+	//sr71.DrawWholeObjectWithNoTransformation();
 
 
 	//necessary to ensure that it draws
@@ -358,6 +350,12 @@ void keyBoardListener(unsigned char ch, int x, int y) {
 
 	} else {			//otherwise called from normal call back function
 		switch (ch) {
+
+		case 27:
+			glutExit();
+			return ;
+			break;
+
 		case 'w': //for small w
 		case 'W': //for capital W
 			//looking upward
@@ -565,6 +563,7 @@ void specialKeyListener(int key, int x, int y) {
 			break;
 		case GLUT_KEY_END:
 			glutExit();
+			return;
 			break;
 		}
 
@@ -736,11 +735,12 @@ void passiveMotionListener(int x,int y){
 int main(int argc, char **argv) {
 
 	//preloading
-	//heli.loadGivenFile();
+	heli.loadGivenFile();
 	//heli.showVerticesAndFaces();
-	aventador.loadGivenFile();
+	//aventador.loadGivenFile();
 	//porsche911.loadGivenFile();
 	//lady.loadGivenFile();
+	//sr71.loadGivenFile();
 	std::cout<<"load complete"<<endl;
 
 	glutInit(&argc, argv);
