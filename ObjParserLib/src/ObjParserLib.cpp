@@ -26,11 +26,12 @@ using namespace std;
 #define HIGHEST_FAN_ROTATION_SPEED 20
 
 
-ObjectParser heli("asset/heli.obj");
-ObjectParser porsche911("asset/porsche.obj");
-ObjectParser aventador("asset/aventador.obj");
-ObjectParser lady("asset/lady.obj");
-ObjectParser sr71("asset/sr71.obj");
+ObjectParser heli("asset/heli.obj",false);
+ObjectParser porsche911("asset/porsche.obj",false);
+ObjectParser aventador("asset/aventador.obj",false);
+ObjectParser lady("asset/lady.obj",false);
+ObjectParser sr71("asset/sr71.obj",false);
+ObjectParser unknown("asset/aventador.obj",true);
 
 
 //fan constant
@@ -211,6 +212,7 @@ void drawing() {
 	drawGrid(10,200,5);
 
 
+	/*
 	//heli.DrawGivenSubobjectWithAngle("rear_rotor",6.3022,-1.04241,4.75804,10,20,30,fan_angle,ObjectParser::Y_AXIS,true);
 	//heli.DrawGivenSubobject("rear_rotor",0,0,0);
 	//heli.DrawWholeObjectWithNoTransformation();
@@ -232,13 +234,14 @@ void drawing() {
 	//drawing main rotor
 	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
 	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
-
+	*/
 
 
 	//porsche911.DrawWholeObjectWithNoTransformation();
 	//aventador.DrawWholeObjectWithNoTransformation();
 	//lady.DrawWholeObjectWithNoTransformation();
 	//sr71.DrawWholeObjectWithNoTransformation();
+	unknown.DrawWholeObjectWithNoTransformation();
 
 
 	//necessary to ensure that it draws
@@ -735,13 +738,13 @@ void passiveMotionListener(int x,int y){
 int main(int argc, char **argv) {
 
 	//preloading
-	heli.loadGivenFile();
+	//heli.loadGivenFile();
 	//heli.showVerticesAndFaces();
 	//aventador.loadGivenFile();
 	//porsche911.loadGivenFile();
 	//lady.loadGivenFile();
 	//sr71.loadGivenFile();
-	std::cout<<"load complete"<<endl;
+
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -750,6 +753,9 @@ int main(int argc, char **argv) {
 	glutCreateWindow("My seminar room :D");
 
 	init();
+
+	unknown.loadGivenFile();
+	std::cout<<"load complete"<<endl;
 
 	glutDisplayFunc(drawing);
 
