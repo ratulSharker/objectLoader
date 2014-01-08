@@ -47,6 +47,7 @@ private:
 
 	//GL_LIST function
 	void loadGivenFileInOpenGLList();
+	void loadGivenFileInOpenGLList2();
 	void DrawWholeObjectWithNoTransformationInOpenGLList();
 
 

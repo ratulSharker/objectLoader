@@ -24,7 +24,7 @@ void ObjectParser::loadGivenFile() {
 	if (this->useListAsDataStructure == false) {
 		this->loadGivenFileInDataStructure();
 	} else {
-		this->loadGivenFileInOpenGLList();
+		this->loadGivenFileInOpenGLList2();
 	}
 }
 
@@ -542,6 +542,220 @@ void ObjectParser::loadGivenFileInOpenGLList() {
 	//you have to clean up all the mess u done with local-xxxxxx
 
 }
+
+void ObjectParser::loadGivenFileInOpenGLList2() {
+	std::ifstream objectFile;
+
+	//opening the file -- in read mode
+	objectFile.open(this->fileName.c_str(), std::fstream::in);
+
+	if (objectFile.is_open() == false) {
+		std::cout << "error opening file -- " << this->fileName << std::endl;
+		return;
+	}
+
+	char buf[256], tmpBuf[30];
+	std::string lastSeenObject;
+	int faceStat;
+
+	//local data structure
+	std::vector<Vertice*> localVertices,localNormals;
+	unsigned int id = 0;
+	unsigned vertexSeenSoFar = 0,normalSeenSoFar=0;
+
+	while (objectFile.eof() == false) {
+		objectFile.getline(buf, 256);	//reading a line from file
+
+		//parser reside here
+		if (buf[0] == '#') { //its a comment so continue
+			continue;
+		} else if (buf[0] == 'o' && buf[1] == ' ') {
+			//its a new object in the file
+			//0.clearing the vectors for the
+			//1.extract the object name
+			//2. entry a new name into maps for that name
+			//3.set the last seen name to this object name
+			//4.set face status unknown
+
+			if(localVertices.size() != 0 && localNormals.size() != 0){//there are already assigned vertices
+				//close the existing lits
+				glEndList();
+				std::cout<<"Created "<<lastSeenObject << " " << id << " GLEndList()"<<std::endl;
+
+				vertexSeenSoFar += localVertices.size();
+				normalSeenSoFar += localNormals.size();
+
+				//time to clear the vectors
+				for(unsigned int i=0;i<localVertices.size();i++){
+					//delete each elem of vertice data
+					delete localVertices[i];
+				}
+				for(unsigned int i=0;i<localNormals.size();i++){
+					//delete each elem normal data
+					delete localNormals[i];
+				}
+
+				localVertices.clear();
+				localNormals.clear();
+
+
+				if(localNormals.size() != 0 || localVertices.size() != 0){
+					std::cout<<"ERROR :: AFTER CLEARING THE VECTORS -- THERE REMAINS SOME OBJECTS"<<std::endl;
+					return;
+				}
+			}
+
+
+			sscanf(buf, "o %s", tmpBuf); //extracting the object name
+			std::cout << tmpBuf << " --  Loading... in GL_LIST" << std::endl;
+			lastSeenObject = tmpBuf;
+
+			//this->faces[lastSeenObject] = std::vector<Face>();
+			faceStat = FACE_COORDINATE_UNKNOWN; //setting face value unknown
+
+			id++;
+			this->objectIdMap[lastSeenObject] = id;
+
+			glNewList(id,GL_COMPILE);//compile a new list with the current id
+			std::cout<<"Creating "<<lastSeenObject << " " << id << " GLnewListCalled"<<std::endl;
+
+		} else if (buf[0] == 'v' && buf[1] == ' ') {
+			//its a vertice for the last seen object
+			//1. scan the X,Y,Z
+			//2. push_back a entry to the vector
+
+			//scanning
+			float tmpX, tmpY, tmpZ;
+			sscanf(buf, "v %f %f %f", &tmpX, &tmpY, &tmpZ);
+
+			//pushing
+			localVertices.push_back(new Vertice(tmpX, tmpY, tmpZ));
+
+		} else if (buf[0] == 'v' && buf[1] == 'n') {
+			//its a normal of vertice for the last seen object
+			//1. scan the X,Y,Z
+			//2. push_back a entry to the maps->lastseenobject->normal-vector
+			float tmpX, tmpY, tmpZ;
+			sscanf(buf, "vn %f %f %f", &tmpX, &tmpY, &tmpZ);
+
+			//pushing the normal vectors
+			localNormals.push_back(new Vertice(tmpX, tmpY, tmpZ));
+
+		} else if (buf[0] == 'f' && buf[1] == ' ') {
+			//its a face for the last seen object
+			//0.detecting the number of point making the face
+			//1.scan the faces four points
+			//2. push back a entry to the maps->lastseenObject->vector
+
+			if (faceStat == FACE_COORDINATE_UNKNOWN) {
+				//time to recognize that how many points on faces
+				int count = 0;
+				for (int p = 0; buf[p] != 0; p++) {
+					if (buf[p] == ' ')
+						count++;
+				}
+				if (count == 3) { //three vertices in each face
+					faceStat = FACE_COORDINATE_THREE;
+				} else if (count == 4) { //four vertices in each face
+					faceStat = FACE_COORDINATE_FOUR;
+				} else { //too many faces for a single face
+						 //no space to allocate this much vertices
+						 //exit
+					std::cout << "ERROR:: TOO MANY VERTICES FOR A SINGLE FACE. GL_LIST"
+							<< std::endl;
+					std::cout << "object filename :: " << this->fileName
+							<< " GL_LIST" <<  std::endl;
+					std::cout << "subobject name :: " << lastSeenObject
+							<< " GL_LIST"<<std::endl;
+					return;
+				}
+			}
+			//extracting the value & pushing
+			unsigned int a, b, c, d, id = 0;
+			if (faceStat == FACE_COORDINATE_THREE) {
+				sscanf(buf, "f %u//%u %u//%u %u//%u", &a, &id, &b, &id, &c,
+						&id);
+				//this->faces[lastSeenObject].push_back(Face(a, b, c, 0, id, false));
+
+				//time to draw a single face
+				glBegin(GL_TRIANGLES);{
+
+
+					Vertice *vn = localNormals[id-1 - normalSeenSoFar ];
+					Vertice *va = localVertices[a-1 - vertexSeenSoFar ];
+					Vertice *vb = localVertices[b-1 - vertexSeenSoFar ];
+					Vertice *vc = localVertices[c-1 - vertexSeenSoFar ];
+
+					glNormal3f(vn->X,vn->Y,vn->Z);
+					glVertex3f(va->X,va->Y,va->Z);
+					glVertex3f(vb->X,vb->Y,vb->Z);
+					glVertex3f(vc->X,vc->Y,vc->Z);
+
+
+
+				}glEnd();
+
+				//localFaces[new std::string(lastSeenObject)].push_back(new Face(a, b, c, 0, id, false));
+				//if any object's consist of equal number of vertices -- comment the following line
+				faceStat = FACE_COORDINATE_UNKNOWN;	//allowing each object different number of faces
+
+
+			} else if (faceStat == FACE_COORDINATE_FOUR) {
+				sscanf(buf, "f %u//%u %u//%u %u//%u %u//%u", &a, &id, &b, &id,
+						&c, &id, &d, &id);
+
+
+				//time to draw a single face which is rectangle
+				glBegin(GL_QUADS);{
+
+					Vertice *vn = localNormals[id-1 - normalSeenSoFar ];
+					Vertice *va = localVertices[a-1 - vertexSeenSoFar ];
+					Vertice *vb = localVertices[b-1 - vertexSeenSoFar ];
+					Vertice *vc = localVertices[c-1 - vertexSeenSoFar ];
+					Vertice *vd = localVertices[d-1 - vertexSeenSoFar ];
+
+
+					glNormal3f(vn->X,vn->Y,vn->Z);
+					glVertex3f(va->X,va->Y,va->Z);
+					glVertex3f(vb->X,vb->Y,vb->Z);
+					glVertex3f(vc->X,vc->Y,vc->Z);
+					glVertex3f(vd->X,vd->Y,vd->Z);
+
+				}glEnd();
+
+				//if any object's consist of equal number of vertices -- comment the following line
+				faceStat = FACE_COORDINATE_UNKNOWN;	//allowing each object different number of faces
+			}
+		}
+	}
+
+	//last loaded object's GLnewList is called but its GLEndList has not been called yet -- you have to manually call it
+	glEndList();
+
+	//last loaded objects vertices & normals are still allocating in the localVertices + localNormals
+	if(localVertices.size() != 0){//if really remain some -- then clean it
+
+		for(unsigned int i=0;i<localVertices.size();i++){
+			//delete each elem of vertice data
+			delete localVertices[i];
+		}
+		localVertices.clear();
+	}
+
+	if(localNormals.size() != 0){//if really remain some -- then clean it
+
+		for(unsigned int i=0;i<localNormals.size();i++){
+				//delete each elem normal data
+				delete localNormals[i];
+		}
+		localNormals.clear();
+	}
+
+
+	//closing the object file
+	objectFile.close();
+}
+
 
 void ObjectParser::DrawWholeObjectWithNoTransformationInDataStructure(){
 	for (std::map<std::string, std::vector<Face> >::iterator it =

@@ -31,7 +31,7 @@ ObjectParser porsche911("asset/porsche.obj",false);
 ObjectParser aventador("asset/aventador.obj",false);
 ObjectParser lady("asset/lady.obj",false);
 ObjectParser sr71("asset/sr71.obj",false);
-ObjectParser unknown("asset/aventador.obj",true);
+ObjectParser unknown("asset/lady.obj",true);
 
 
 //fan constant
