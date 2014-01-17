@@ -40,16 +40,16 @@ private:
 	/*
 	 * underlying private function to replace the complexity
 	 */
+
 	//c data structure function
 	void loadGivenFileInDataStructure();
 	void DrawWholeObjectWithNoTransformationInDataStructure();
-
+	void DrawGivenSubObjectInDataStructure(std::string objName);
 
 	//GL_LIST function
 	void loadGivenFileInOpenGLList();
-	void loadGivenFileInOpenGLList2();
 	void DrawWholeObjectWithNoTransformationInOpenGLList();
-
+	void DrawGivenSubObjectOpenGlList(std::string objName);
 
 public:
 

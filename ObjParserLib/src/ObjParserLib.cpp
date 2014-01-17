@@ -13,8 +13,8 @@ using namespace std;
 
 #include <cmath>
 #include <gl/freeglut.h>
-#include "../openGL/myGrid.h"
-#include "../libs/ObjectParser.h"
+#include "../openGL/myGrid.h" //primitive grid drawing
+#include "../libs/ObjectParser.h" // needed for the object parser class
 #include <vector>
 
 #define PI 3.14159265
@@ -26,15 +26,17 @@ using namespace std;
 #define HIGHEST_FAN_ROTATION_SPEED 20
 
 
-ObjectParser heli("asset/heli.obj",false);
+/*
+ObjectParser heli("asset/heli.obj",true);
 ObjectParser porsche911("asset/porsche.obj",false);
 ObjectParser aventador("asset/aventador.obj",false);
-ObjectParser lady("asset/lady.obj",false);
+ObjectParser lady("asset/lady.obj",true);
 ObjectParser sr71("asset/sr71.obj",false);
-ObjectParser unknown("asset/lady.obj",true);
+*/
+
+ObjectParser city("asset/rickshaw.obj",true); //initialize the class that i made as global - so anyone can run any operation on that
 
 
-//fan constant
 #define FAN_ACCERALATING 1
 #define FAN_DECCERALATING 2
 #define FAN_STOP 3
@@ -49,7 +51,7 @@ double currentCameraX = 0, currentCameraY = 0, currentCameraZ = 20;
 double currentLookingAtX = 10, currentLookingAtY = 10, currentLookingAtZ = 0;
 
 double CameraMovingAngle = 0;
-double movingSpeed = 2, LookAngleDeviation = 2;
+double movingSpeed = 2, LookAngleDeviation = 1;
 
 //multiple key support -- for special keys
 #define LEFT_ARROW 0
@@ -96,8 +98,12 @@ void init() {
 	//enable lighting things
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	float color[] = {1.0,1.0,1.0,1.0};
+	float color[] = {1,1,1,1};
 	glLightfv(GL_LIGHT0,GL_AMBIENT_AND_DIFFUSE,color);
+
+	//material and enable coloring
+	glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+	glEnable ( GL_COLOR_MATERIAL );
 
 
 	//calculate the initial looking + camera looking at the first quadtrant
@@ -113,82 +119,6 @@ void init() {
 
 }
 
-/*
-void drawHeli(){
-	float displaceX = 0,displaceY = 0,displaceZ = 0;
-	for(std::map<std::string,std::vector<Face> >::iterator it = heli.faces.begin(); it != heli.faces.end() ; it++){
-
-		//std::cout<<it->first<<" "<<it->second.size()<<endl;
-		if(it->first.compare("rear_rotor")==0){
-			displaceX = 6.3022; //main_rotor transformation values
-			displaceY = -1.04241;
-			displaceZ = 4.75804;
-
-			//double ThetaX = 20.0,ThetaY = 25.0, ThetaZ = -30.0;
-
-			glPushMatrix();
-			//glTranslatef(displaceX,displaceY,displaceZ);
-
-
-			//XZ axis angle can be provided here
-
-			glRotatef(fan_angle,cos((ThetaX) * 3.1416/180.0) * sin((-ThetaZ) * 3.1416 / 180.0),
-								cos((ThetaX) * 3.1416/180.0) * cos((ThetaZ) * 3.1416/180.0),
-								sin((ThetaX) * 3.1416/180.0));
-
-			glRotatef(10,1,0,0);
-			glRotatef(20,0,1,0);
-			glRotatef(30,0,0,1);
-
-			glRotatef(fan_angle,0,1,0);
-
-			glRotatef(-10,1,0,0);
-			glRotatef(-20,0,1,0);
-			glRotatef(-30,0,0,1);
-
-		}
-		else{
-			displaceX = 0; //main_rotor transformation values
-			displaceY = 0;
-			displaceZ = 0;
-		}
-		//here we get a object
-		for(unsigned int i=0;i<it->second.size();i++){
-			//here we get a single face
-				if(it->second[i].isFour){
-					glBegin(GL_QUADS);
-				}
-				else{
-					glBegin(GL_TRIANGLES);
-				}
-
-
-				Vertice *v1 = &heli.vertices[it->second[i].A - 1];
-				Vertice *v2 = &heli.vertices[it->second[i].B - 1];
-				Vertice *v3 = &heli.vertices[it->second[i].C - 1];
-
-
-				glVertex3f(v1->X-displaceX,v1->Y-displaceY,v1->Z-displaceZ);
-				glVertex3f(v2->X-displaceX,v2->Y-displaceY,v2->Z-displaceZ);
-				glVertex3f(v3->X-displaceX,v3->Y-displaceY,v3->Z-displaceZ);
-
-				if(it->second[i].isFour){
-					Vertice *v4 = &heli.vertices[it->second[i].D - 1];
-					glVertex3f(v4->X-displaceX,v4->Y-displaceY,v4->Z-displaceZ);
-				}
-
-				glEnd();
-
-			}
-
-		if(it->first.compare("rear_rotor")==0){
-			glPopMatrix();
-		}
-
-		}
-}
-*/
-
 void drawing() {
 
 	//clearing :D
@@ -202,7 +132,7 @@ void drawing() {
 	glLoadIdentity();
 
 	//lighting codes
-	float position[] = {0,0,40,1};
+	float position[] = {100,100,400,1};
 	glLightfv(GL_LIGHT0,GL_POSITION,position);
 
 	//camera settings
@@ -212,7 +142,12 @@ void drawing() {
 	drawGrid(10,200,5);
 
 
-	/*
+/*//whenever heli object is uncommented above u can uncomment the following codes then press F to
+ * rotate the main rotor of the helicopter
+ */
+
+/*
+
 	//heli.DrawGivenSubobjectWithAngle("rear_rotor",6.3022,-1.04241,4.75804,10,20,30,fan_angle,ObjectParser::Y_AXIS,true);
 	//heli.DrawGivenSubobject("rear_rotor",0,0,0);
 	//heli.DrawWholeObjectWithNoTransformation();
@@ -234,14 +169,23 @@ void drawing() {
 	//drawing main rotor
 	heli.DrawGivenSubobjectWithAngle("main_rotor",6.32871,10.69359,4.16496,-90,0,0,fan_angle,ObjectParser::Y_AXIS,false);
 	heli.DrawGivenSubobjectWithAngle("rear_rotor",6.41021,-1.04241,4.75804,7.004,0,-90,fan_angle,ObjectParser::Y_AXIS,false);
-	*/
+*/
 
 
 	//porsche911.DrawWholeObjectWithNoTransformation();
 	//aventador.DrawWholeObjectWithNoTransformation();
 	//lady.DrawWholeObjectWithNoTransformation();
 	//sr71.DrawWholeObjectWithNoTransformation();
-	unknown.DrawWholeObjectWithNoTransformation();
+
+	glPushMatrix();{
+
+		//here u can do any kind of transformation here
+		//glScalef(2,2,2);
+		glRotatef(45,0,0,1);
+		city.DrawWholeObjectWithNoTransformation();
+
+	}glPopMatrix();
+
 
 
 	//necessary to ensure that it draws
@@ -737,25 +681,18 @@ void passiveMotionListener(int x,int y){
 
 int main(int argc, char **argv) {
 
-	//preloading
-	//heli.loadGivenFile();
-	//heli.showVerticesAndFaces();
-	//aventador.loadGivenFile();
-	//porsche911.loadGivenFile();
-	//lady.loadGivenFile();
-	//sr71.loadGivenFile();
-
-
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(1024, 768);
-	glutCreateWindow("My seminar room :D");
+	glutCreateWindow("object - library");
 
 	init();
 
-	unknown.loadGivenFile();
-	std::cout<<"load complete"<<endl;
+	city.loadGivenFile(); //loading the file must be called after the init function called
+	std::cout<<"Loading complete"<<std::endl;
+
+
 
 	glutDisplayFunc(drawing);
 
