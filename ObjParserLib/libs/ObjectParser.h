@@ -65,8 +65,16 @@ const static int Z_AXIS  = 5;
 	void DrawWholeObjectWithNoTransformation();
 
 	/*too much memory & CPU consuming code*/
-	void DrawGivenSubobjectWithAngle(std::string objName,float displaceX,float displaceY,float displaceZ,
-			float thetaX,float thetaY,float thetaZ,float angularRotation,int rotateAbout,bool keepAtCenter);
+	void DrawGivenSubobjectWithAngle(std::string objName,
+									 float displaceX,
+									 float displaceY,
+									 float displaceZ,
+									float thetaX,
+									float thetaY,
+									float thetaZ,
+									float angularRotation,
+									int rotateAbout,
+									bool keepAtCenter);
 
 };
 
